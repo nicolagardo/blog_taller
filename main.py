@@ -7,6 +7,7 @@ from flask_login import (
     login_user,
 )
 from werkzeug.urls import url_parse
+
 from app import create_app
 from app.forms import LoginForm, PostForm, CommentForm
 from app.db import db
@@ -16,6 +17,7 @@ from app.models.posts import Post
 from app.models.roles import Role
 from app.utils.utils import Permission
 from app.utils.decorator import admin_required, permission_required
+from index import index_p
 
 
 app = create_app()
@@ -30,11 +32,11 @@ def load_user(id):
     return User.query.get(int(id))
 
 
-@app.route("/")
-@login_required
-def index():
-    posts = Post.query.all()
-    return render_template("indexCss.html", posts=posts)
+# @app.route("/")
+# @login_required
+# def index():
+#     posts = Post.query.all()
+#     return render_template("indexCss.html", posts=posts)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -84,8 +86,8 @@ def for_moderators_only():
 
 @app.route("/insert")
 def insert():
-    u = User(username="linder2", email="linder02@gmail.com")
-    u.set_password("linder340")
+    u = User(username="nicolas123", email="nico@email.com")
+    u.set_password("password")
 
     role = Role(name="User", users=[u])
     role.add_permission(Permission.WRITE)
@@ -95,6 +97,9 @@ def insert():
 
     return "Insertado"
 
+# @app.get("/post")
+# def get_post():
+#     return render_template('post.html')
 
 @app.route("/post", methods=["GET", "POST"])
 @login_required
@@ -106,7 +111,7 @@ def post():
         db.session.add(new_post)
         db.session.commit()
 
-        return redirect(url_for("index"))
+        return redirect(url_for("index.index"))
 
     return render_template("post.html", post_form=post_form)
 
